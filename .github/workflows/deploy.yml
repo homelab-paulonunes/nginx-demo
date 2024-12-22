@@ -49,15 +49,18 @@ jobs:
           AZURE_STORAGE_ACCOUNT: ${{ secrets.AZURE_STORAGE_ACCOUNT }}
           AZURE_FILE_SHARE: ${{ secrets.AZURE_FILE_SHARE }}
           AZURE_STORAGE_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AZCOPY_SPA_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
         run: |
+          # Login usando Client Secret
           azcopy login --service-principal \
             --application-id "${{ secrets.AZURE_CLIENT_ID }}" \
-            --tenant-id "${{ secrets.AZURE_TENANT_ID }}" \
-            --certificate "${{ secrets.AZURE_CLIENT_SECRET }}"
+            --tenant-id "${{ secrets.AZURE_TENANT_ID }}"
 
+          # Sincronizar arquivos com Azure File Share
           azcopy sync ./config "https://${{ env.AZURE_STORAGE_ACCOUNT }}.file.core.windows.net/${{ env.AZURE_FILE_SHARE }}" \
-            --recursive \
-            --dest-key "${{ secrets.AZURE_STORAGE_KEY }}"
+            --recursive
 
       # Configurar a chave SSH
       - name: Set up SSH Key
