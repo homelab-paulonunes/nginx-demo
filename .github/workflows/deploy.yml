@@ -35,9 +35,12 @@ jobs:
       # Baixar e configurar o AzCopy
       - name: Install AzCopy
         run: |
-          wget -O azcopy.tar.gz https://aka.ms/downloadazcopylinux
-          tar -xf azcopy.tar.gz
-          sudo cp ./azcopy_linux_amd64_*/azcopy /usr/local/bin/azcopy
+          sudo apt-get update
+          sudo apt-get install -y apt-transport-https
+          echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/azure-cli.list
+          curl -sL https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+          sudo apt-get update
+          sudo apt-get install -y azcopy
           azcopy --version
 
       # Fazer upload do conteúdo local para o Azure File Share
