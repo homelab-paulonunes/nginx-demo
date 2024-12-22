@@ -48,10 +48,16 @@ jobs:
         env:
           AZURE_STORAGE_ACCOUNT: ${{ secrets.AZURE_STORAGE_ACCOUNT }}
           AZURE_FILE_SHARE: ${{ secrets.AZURE_FILE_SHARE }}
-          AZURE_SAS_TOKEN: ${{ secrets.AZURE_SAS_TOKEN }}
+          AZURE_STORAGE_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
         run: |
-          azcopy sync ./config "https://${{ env.AZURE_STORAGE_ACCOUNT }}.file.core.windows.net/${{ env.AZURE_FILE_SHARE }}?${{ env.AZURE_SAS_TOKEN }}" \
-            --recursive
+          azcopy login --service-principal \
+            --application-id "${{ secrets.AZURE_CLIENT_ID }}" \
+            --tenant-id "${{ secrets.AZURE_TENANT_ID }}" \
+            --certificate "${{ secrets.AZURE_CLIENT_SECRET }}"
+
+          azcopy sync ./config "https://${{ env.AZURE_STORAGE_ACCOUNT }}.file.core.windows.net/${{ env.AZURE_FILE_SHARE }}" \
+            --recursive \
+            --dest-key "${{ secrets.AZURE_STORAGE_KEY }}"
 
       # Configurar a chave SSH
       - name: Set up SSH Key
