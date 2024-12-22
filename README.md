@@ -1,13 +1,19 @@
 # NGINX Demo
 
-This repository demonstrates how to deploy an NGINX application using GitHub Actions and Docker Compose.
+This repository demonstrates deploying an NGINX application using Azure File Share for file storage.
 
-## Deployment
+## Folder Structure
 
-1. Push changes to the `main` branch.
-2. GitHub Actions will handle the deployment to the remote server.
+- `config/`: Contains the files to be served by NGINX.
 
-## Configuration
+## How It Works
 
-- **Environment Variable**: The target server IP is configurable via the `SERVER_IP` environment variable in the workflow.
-- **Secrets**: Ensure that `SSH_PRIVATE_KEY` is configured in the GitHub repository secrets.
+1. The `config/` folder contains the static files (e.g., `index.html`) served by NGINX.
+2. A GitHub Actions workflow automates:
+   - Uploading files from `config/` to Azure File Share.
+   - Deploying an NGINX container on the target server with the Azure File Share mounted.
+
+## How to Customize
+
+- Modify `config/index.html` to change the page content.
+- Update the GitHub Actions workflow (`.github/workflows/deploy.yml`) to point to the desired target server.
