@@ -47,12 +47,11 @@ jobs:
       - name: Upload Content to Azure File Share
         env:
           AZURE_STORAGE_ACCOUNT: ${{ secrets.AZURE_STORAGE_ACCOUNT }}
-          AZURE_STORAGE_KEY: ${{ secrets.AZURE_STORAGE_KEY }}
           AZURE_FILE_SHARE: ${{ secrets.AZURE_FILE_SHARE }}
+          AZURE_SAS_TOKEN: ${{ secrets.AZURE_SAS_TOKEN }}
         run: |
-          azcopy sync ./config "https://${{ env.AZURE_STORAGE_ACCOUNT }}.file.core.windows.net/${{ env.AZURE_FILE_SHARE }}/${{ env.REPO_NAME }}" \
-            --recursive \
-            --dest-key=${{ secrets.AZURE_STORAGE_KEY }}
+          azcopy sync ./config "https://${{ env.AZURE_STORAGE_ACCOUNT }}.file.core.windows.net/${{ env.AZURE_FILE_SHARE }}?${{ env.AZURE_SAS_TOKEN }}" \
+            --recursive
 
       # Configurar a chave SSH
       - name: Set up SSH Key
